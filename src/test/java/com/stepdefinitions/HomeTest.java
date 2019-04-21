@@ -29,14 +29,13 @@ public class HomeTest extends GenericMethods {
 	@When("^User click  on child tabs they should navigate the Respective child  tab pages$")
 	public void user_click_on_child_tabs_they_should_navigate_the_Respective_child_tab_pages() {
 		home.verify_Birthday_All_Sections_tabs_navigation();
-		driver.navigate().refresh();
+		hoverAnElement(home.tb_Birthday);
 		
 	}
 
 	@Then("^All Child Tabs Text should match with Respective child Tabs page Text$")
 	public void all_Child_Tabs_Text_should_match_with_Respective_child_Tabs_page_Text() {
-		home = new Home();
-		hoverAndClick(home.btn_close_window);
+		
 		home.verify_BirthDay_flowers_section_tabs_text();
 		home.verify_BirthDay_cakes_section_tabs_text();
 		home.verify_BirthDay_Gifts_section_tabs_text();

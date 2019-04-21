@@ -52,7 +52,7 @@ public class Home extends GenericMethods {
 	public void mouse_hover_BirthDay() {
 		boolean flag = false;
 		try {
-			//hoverAndClick(btn_close_window);
+			hoverAndClick(btn_close_window);
 			hoverAnElement(tb_Birthday);
 			logStatus("pass", "Successfully mouse hovered on BirthDay Tab");
 			flag = true;
