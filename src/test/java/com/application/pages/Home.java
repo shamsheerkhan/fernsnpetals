@@ -116,15 +116,18 @@ public class Home extends GenericMethods {
 			verify_Section_All_tabs_existence(list_Birthday_plants, "BirthDay Plants");
 			verify_Section_All_tabs_existence(list_Birthday_combos, "BirthDay Commbos");
 			verify_Section_All_tabs_existence(list_Birthday_recipient, "BirthDay Recipient");
+			logStatus("pass","Successfully all child tabs "
+					+ "are Displayed on mouse hover of BorthDay Tab" );
 			flag = true;
 		} catch (Exception e) {
-
 			e.printStackTrace();
+			logStatus("fail","On mouse hover of BirthDay Tab the child Tabs  or not displayed" );
 		}
 		if (flag)
-			System.out.println("Successfully child tabs navigated to respective page");
+			System.out.println("Successfully all child tabs "
+					+ "are Displayed on mouse hover of BorthDay Tab");
 		else
-			System.out.println("child tabs unable to navigate the respective page");
+			System.out.println("On mouse hover of BirthDay Tab the child Tabs  or not displayed");
 
 	}
 
@@ -246,6 +249,7 @@ public class Home extends GenericMethods {
 					if( hoverAndClick_boolean(e)){
 					WebElement text_element_xpath = driver.findElement(By.xpath(element_xpath));
 					verifyElementText(exp_text, text_element_xpath);
+					logStatus("pass", "Text matched");
 					flag=true;
 					}
 					if (flag) {
@@ -253,7 +257,8 @@ public class Home extends GenericMethods {
 						
 					}
 			}catch(Exception e){
-			e.printStackTrace();	
+			e.printStackTrace();
+			logStatus("fail", "Text not  matched");
 			}
 
 		}
