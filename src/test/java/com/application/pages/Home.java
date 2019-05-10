@@ -22,9 +22,9 @@ public class Home extends GenericMethods {
 	public static ReadExcel read_excel;
 	// ************************************TAB_SECTION**************************************//
 	@FindBy(how = How.XPATH, using = "//div[@id='nvpush_cross']")
-	public static WebElement btn_close_window;
+	public  WebElement btn_close_window;
 	@FindBy(how = How.XPATH, using = "//a[@id='#birthdaymenu']")
-	public static WebElement tb_Birthday;
+	public  WebElement tb_Birthday;
 	// ******************************BIRTHDAY_SUBMENU_TABS****************************************//
 
 	List<WebElement> list_Birthday_flowers = driver.findElements(By.xpath("//div[@id='birthdaymenu']//section[1]//a"));
@@ -230,39 +230,43 @@ public class Home extends GenericMethods {
 	 */
 	// ***********************************************************************************************//
 	public void verification_child_section_tabs_text(String filename, String sheetname, int row_id, int parameters) {
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		try{
-			for (int i = 1; i <= row_id; i++) {
 		
-			ArrayList<String> input = read_excel.getTestData(filename, sheetname, i, parameters);
-			String parent_xpath = input.get(0);
-			String section_child_xpath = input.get(1);
-			String element_xpath = input.get(2);
-			String exp_text = input.get(3);
-			System.out.println(parent_xpath + " " + section_child_xpath + " " + element_xpath + " " + exp_text);
-			
-			try{
-				
-				boolean flag = false;
-				WebElement e=driver.findElement(By.xpath(section_child_xpath));
-					hoverAnElement(tb_Birthday);
-					if( hoverAndClick_boolean(e)){
-					WebElement text_element_xpath = driver.findElement(By.xpath(element_xpath));
-					verifyElementText(exp_text, text_element_xpath);
-					logStatus("pass", "Text matched");
-					flag=true;
-					}
-					if (flag) {
-						driver.navigate().back();
-						
-					}
-			}catch(Exception e){
-			e.printStackTrace();
-			logStatus("fail", "Text not  matched");
-			}
+		try {
+			for (int i = 1; i <= row_id; i++) {
 
-		}
-		}catch(Exception e){
+				ArrayList<String> input = read_excel.getTestData(filename, sheetname, i, parameters);
+				String parent_xpath = input.get(0);
+				String section_child_xpath = input.get(1);
+				String element_xpath = input.get(2);
+				String exp_text = input.get(3);
+				System.out.println(parent_xpath + " " + section_child_xpath + " " + element_xpath + " " + exp_text);
+
+				try {
+
+					boolean flag = false;
+					WebElement e = driver.findElement(By.xpath(section_child_xpath));
+					hoverAnElement(tb_Birthday);
+					if (verifyElementExistBoolean(e)) {
+						if (hoverAndClick_boolean(e)) {
+							Thread.sleep(3000);
+							WebElement text_element_xpath = driver.findElement(By.xpath(element_xpath));
+							verifyElementText(exp_text, text_element_xpath);
+							logStatus("pass", "Text matched");
+							flag = true;
+						}
+						if (flag) {
+							driver.navigate().back();
+							Thread.sleep(3000);
+						}
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					logStatus("fail", "Text not  matched");
+				}
+
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

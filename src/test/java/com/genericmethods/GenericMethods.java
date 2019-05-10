@@ -79,9 +79,13 @@ public class GenericMethods extends MakeExtentReport {
 		try {
 			// Wait till the WebElement is Displayed
 			new WebDriverWait(driver,5).until(ExpectedConditions.visibilityOf(element));
-			
+			JavascriptExecutor js = ((JavascriptExecutor) driver);
+			for (int i = 0; i <= 3; i++) {
+				js.executeScript("arguments[0].style.border='3px solid red'", element);
+			}
 			Actions act=new Actions(driver);
-			act.moveToElement(element).click().build().perform();
+			act.moveToElement(element).perform();
+			js.executeScript("arguments[0].click();", element);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -186,10 +190,13 @@ public class GenericMethods extends MakeExtentReport {
 	public static void hoverAnElement(WebElement element) {
 		try {
 			// Wait till the WebElement is Displayed
-			new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(element));
+			new WebDriverWait(driver, 25).until(ExpectedConditions.visibilityOf(element));
+			JavascriptExecutor js = ((JavascriptExecutor) driver);
+			for (int i = 0; i <= 3; i++) {
+				js.executeScript("arguments[0].style.border='3px solid red'", element);
+			}
 			Actions act=new Actions(driver);
 			act.moveToElement(element).perform();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -325,6 +332,36 @@ public class GenericMethods extends MakeExtentReport {
 
 	//***********************************************************************************************//
 	/*
+	 * Method Name 		:= verifyElementExistBoolean()
+	 * 
+	 * Input Parameter 	:= WebElement
+	 * 
+	 * OutPut Parameter := NA
+	 * 
+	 * Designer #		:= SHAMSHEER
+	 * 
+	 * Sprint #			:= NA
+	 */
+	// *****************************************************************************************//
+	public static boolean verifyElementExistBoolean(WebElement element) {
+		try {
+			hoverAnElement(element);
+			String elementname = getElementname(element);
+			String pagename = driver.getTitle();
+			if (element.isDisplayed()) {
+				System.out.println(elementname + " is Displayed in " + pagename);
+			} else
+				System.out.println(elementname + " is Not Displayed in " + pagename);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+
+	}
+
+	//***********************************************************************************************//
+	/*
 	 * Method Name 			:= verify_Section_All_tabs_existence() 
 	 * Input Parameters		:= List<WebElement> 
 	 * OutPut Parameters	:= NA
@@ -388,7 +425,13 @@ public class GenericMethods extends MakeExtentReport {
 	 */
 	// ********************************************************************************//
 	public static void verifyElementText(String exp_text, WebElement element) {
-		new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(element));
+		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOf(element));
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		for (int i = 0; i <= 3; i++) {
+			js.executeScript("arguments[0].style.border='2px solid red'", element);
+		}
+		Actions act=new Actions(driver);
+		act.moveToElement(element).perform();
 		String act_text = getElementname(element);
 		if (act_text.equals((exp_text).trim()))
 			System.out.println("Element Text is matched");
@@ -412,9 +455,14 @@ public class GenericMethods extends MakeExtentReport {
 	public static boolean hoverAndClick_boolean(WebElement element) {
 		boolean flag = false;
 		try {
-			new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(element));
-			Actions builder = new Actions(driver);
-			builder.moveToElement(element).click().build().perform();
+			new WebDriverWait(driver, 25).until(ExpectedConditions.visibilityOf(element));
+			JavascriptExecutor js = ((JavascriptExecutor) driver);
+			for (int i = 0; i <= 3; i++) {
+				js.executeScript("arguments[0].style.border='2px solid red'", element);
+			}
+			Actions act=new Actions(driver);
+			act.moveToElement(element).perform();
+			js.executeScript("arguments[0].click();", element);
 
 			flag = true;
 		} catch (Exception e) {

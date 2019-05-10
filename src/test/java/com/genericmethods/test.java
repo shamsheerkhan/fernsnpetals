@@ -4,147 +4,103 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tools.ant.taskdefs.email.EmailAddress;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class test extends GenericMethods {
-	public static XSSFWorkbook book;
-	public static XSSFSheet sheet;
-	public static File file;
+import com.application.pages.Home;
 
-	public static void main(String[] args) {
-		System.out.println(getTestData("BirthDay", "Flowers", 1, 4));
+public class test {
 
-	}
+	static WebDriver driver;
+	static URL url;
 
-	public static ArrayList getTestData(String filepath,String sheetName,int rowindex,int parameters) {
-		 int rowcount;int colcount;String BirthDay_xpath="";
-			String Flowers_child_path="";String text_element_path="";String exp_text="";
-			ArrayList<String>input=new ArrayList<String>();
-				
-		try {
-			
-			loadexcelfile(filepath);
-			 rowcount=getRowCountt(sheetName);
-			colcount=getColumnCountt(sheetName);
-			
-			boolean bTag = false;
-			
-			int i=rowindex;
-				Row r=sheet.getRow(i);
-				for(int j=0;j<parameters;j++) {
-					if(j==0) {
-				BirthDay_xpath=r.getCell(j).getStringCellValue().toString();
-				input.add(BirthDay_xpath);
-				
-					}
-				if(j==1) {
-				 Flowers_child_path=r.getCell(j).getStringCellValue().toString();
-				input.add(Flowers_child_path);
-				}
-					if(j==2) {
-				text_element_path=r.getCell(j).getStringCellValue().toString();
-				input.add(text_element_path);
-					}
-					if(j==3) {
-				exp_text=r.getCell(j).getStringCellValue().toString();
-				input.add(exp_text);
-					}
-					
-						
-				bTag = true;
-				}
-				if(bTag==false)
-			{
-				System.out.println("Can't get Data from Test Data file");
+	public static void main(String[] args)  {
+		driver = new FirefoxDriver();
+		driver.manage().window().maximize();
+		driver.get("http://automationpractice.com/");
+
+		List<WebElement> linklist = driver.findElements(By.tagName("a"));
+		linklist.addAll(driver.findElements(By.tagName("img")));
+		List<WebElement> activelinks = new ArrayList<WebElement>();
+		List<WebElement>brokenlinks=new ArrayList<WebElement>();
+		System.out.println(linklist.size());
+		for (WebElement e : linklist) {
+			if (e.getAttribute("href") != null) {
+				activelinks.add(e);
 			}
-			book.close();
+			if (e.getAttribute("img") != null) {
+				activelinks.add(e);
+			}
 		}
-		catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		catch(IOException e) {
-			e.printStackTrace();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-				
-	return input;
-	}
-	// ***********************************************************************************************************
+		System.out.println(activelinks.size());
 
-	public static void loadexcelfile(String fileName) {
-		System.out.println("Loading Excel File");
-		String path = System.getProperty("user.dir") + "\\TestData\\" + fileName + ".xlsx";
-		boolean status = verifyFileExist(path);
-		if (status) {
+		for (WebElement e : activelinks) {
+			String linkUrl = getLinkUrl(e);
+			System.out.println(linkUrl);
+			boolean status1=false;
+			try{
+				url=new URL(linkUrl);
+				status1=true;
+			}catch(MalformedURLException ex){
+				ex.printStackTrace();
+			}
+			HttpURLConnection connnection = null;
+			if(status1){
+				boolean statu2=false;
 			try {
-				FileInputStream finput = new FileInputStream(file);
-				try {
-					book = new XSSFWorkbook(finput);
-				} catch (IOException e) {
-
-					System.out.println("Work book can't opened");
-				}
-				System.out.println("File Loaded Successfully");
-
-			} catch (FileNotFoundException e) {
-
-				e.printStackTrace();
+				connnection = (HttpURLConnection)url.openConnection();
+				statu2=true;
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}catch(ClassCastException e1){
+				e1.printStackTrace();
 			}
-
-		} else {
-			System.out.println("No file available under specified path " + path);
+			if(statu2){
+			try {
+				connnection.connect();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				if(connnection.getResponseCode()==200){
+					brokenlinks.add(e);
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			}
+			}
 		}
-	}
-
-	// *************************************************************************************
-	public static boolean verifyFileExist(String path) {
-		boolean status = false;
-		try {
-			file = new File(path);
-			status = true;
-		} catch (Exception e) {
-			System.out.println("File not Existed in path " + path);
-		}
-
-		return status;
-
-	}
-
-	// *****************************************************************************
-	public static int getRowCountt(String sheetname) {
-		int rowcount = 0;
-		try {
-			sheet = book.getSheet(sheetname);
-			rowcount = sheet.getPhysicalNumberOfRows();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return rowcount;
+		System.out.println("brokenlins size present in page are "+brokenlinks.size());
 
 	}
-
-	// *************************************************************************************************
-	public static int getColumnCountt(String sheetname) {
-		int columncount = 0;
-		try {
-
-			columncount = sheet.getRow(0).getPhysicalNumberOfCells();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+	//-----------------------------------------------------------------------------------
+	public static String getLinkUrl(WebElement e){
+		String url=e.getAttribute("href");
+		if(url==null){
+			e.getAttribute("src");
 		}
-
-		return columncount;
-
+		return url;
+		
 	}
+
 }
